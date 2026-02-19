@@ -1,0 +1,35 @@
+Loaded insurance.csv
+Data Shape: (1338, 7)
+   Age     sex        BMI  Children smoker     region         Claim
+0   56    male  27.361442         1     no  southeast  25994.431219
+1   46    male  25.930172         0     no  southwest  23493.186315
+2   32  female  31.775072         1     no  southwest  19629.053109
+3   60  female  24.729763         2     no  southwest  26878.106081
+4   25  female  33.049517         0     no  northwest  19952.383654
+
+Training Robust Regression (Huber)...
+Training Linear Regression (OLS) for comparison...
+
+Huber Regressor Results:
+  MAE: 6127.57
+  MSE: 126994744.84
+  Coefficients: [251.85346549 310.84704328 458.22269135]
+  Intercept: 3080.80
+
+Ordinary Least Squares (OLS) Results:
+  MAE: 7920.51
+  MSE: 102069309.83
+  Coefficients: [248.98935094 323.70417849 357.09062013]
+  Intercept: 6982.55
+
+Comparison plot saved to 'ml/robust_vs_ols.png'
+
+==============================
+ARDUINO CONFIGURATION (REAL DATA)
+==============================
+// Copy these values into your Arduino Sketch
+float INTERCEPT = 3080.7959;
+float WEIGHT_AGE = 251.8535;
+float WEIGHT_BMI = 310.8470;
+float WEIGHT_CHILDREN = 458.2227;
+==============================
