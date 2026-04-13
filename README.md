@@ -1,36 +1,68 @@
 # Robust Insurance Claim Prediction System
 
-This project implements a Robust Regression model (using Huber Loss) to predict insurance claim amounts. The trained model is deployed on an Arduino for portable, offline inference.
+A complete project for robustly predicting insurance claim amounts using Huber regression. The system includes:
+
+- synthetic data generation
+- model training and evaluation
+- a virtual CLI prediction demo
+- a minimal browser interface
+- optional Arduino deployment
 
 ## Project Structure
-- `ml/train_model.py`: Python script to generate data, train the model, and output Arduino coefficients.
-- `ml/robust_vs_ols.png`: Visualization of the model's robustness against outliers.
-- `arduino/insurance_predictor/insurance_predictor.ino`: Arduino firmware.
+- `main.py`: root entry point to run the virtual demo, train the model, or generate the dataset.
+- `ml/generate_data.py`: synthetic insurance dataset generator.
+- `ml/train_model.py`: trains the Huber regression model, evaluates it, and prints Arduino coefficients.
+- `ml/virtual_predict.py`: interactive CLI demo for browser-free prediction.
+- `ml/robust_vs_ols.png`: comparison plot showing robust vs OLS regression.
+- `web-showcase/index.html`: minimal black-and-white browser UI for prediction.
+- `arduino/insurance_predictor/insurance_predictor.ino`: optional Arduino firmware for offline inference.
 
-## How to Run
+## How to Use
 
-### 1. Train the Model (Optional)
-The model coefficients are already hardcoded in the Arduino sketch, but if you want to retrain:
-1.  Install dependencies: `pip install scikit-learn pandas matplotlib`
-2.  Run the script: `python ml/train_model.py`
-3.  Copy the coefficients from the output to `insurance_predictor.ino`.
+### 1. Install Dependencies
+Create or activate a Python virtual environment, then install:
 
-### 2. Upload to Arduino
-1.  Open `arduino/insurance_predictor/insurance_predictor.ino` in Arduino IDE.
-2.  Connect your components:
-    - **LCD**: Pins 7(RS), 6(E), 5(D4), 4(D5), 3(D6), 2(D7)
-    - **Keypad (4x4)**: Rows (A0-A3), Cols (8, 9, 11, 12)
-    - **SD Card**: CS Pin 10, MOSI 11, MISO 12, SCK 13 (Standard SPI)
-    *Note: Check your specific shield/module pinout.*
-3.  Upload the sketch.
+```bash
+pip install -r requirements.txt
+```
 
-### 3. Usage
-1.  Press **A** to start.
-2.  Enter **Age** (e.g., 25) and press **#**.
-3.  Enter **BMI** (e.g., 30) and press **#**.
-4.  Enter **Children** (e.g., 2) and press **#**.
-5.  View the predicted Claim Amount.
-6.  Press **D** to reset.
+### 2. Run the Virtual Demo
+Use the CLI demo to predict claims without any hardware:
 
-## Robustness
-The model uses **Huber Loss** to minimize the effect of outliers (e.g., fraudulent or extreme claims) during training, resulting in more reliable predictions for typical cases compared to standard Linear Regression.
+```bash
+python main.py virtual
+```
+
+Enter values for `Age`, `BMI`, and `Children` when prompted.
+
+### 3. Open the Browser Demo
+Open the static page in a browser:
+
+- `web-showcase/index.html`
+
+This page performs prediction in the browser using pre-trained model coefficients.
+
+### 4. Train the Model (Optional)
+To retrain the model and produce updated evaluation output:
+
+```bash
+python main.py train
+```
+
+### 5. Regenerate the Dataset (Optional)
+To recreate the synthetic dataset:
+
+```bash
+python main.py generate
+```
+
+### 6. Optional Arduino Deployment
+The Arduino sketch is optional and can be used later for a physical deployment.
+
+## Overview
+This project is built around robust regression with **Huber loss**. That means the model is less sensitive to extreme outliers than ordinary least squares, while still fitting the bulk of the data accurately.
+
+## Notes
+- The prediction model uses three inputs: `Age`, `BMI`, and `Children`.
+- The browser demo is fully virtual and does not require a backend server.
+- The Arduino sketch is included only as an optional extension.

@@ -1,0 +1,44 @@
+Robust Insurance Claim Amount Forecasting and Loss Optimization System
+
+Overview:
+This project builds a robust regression model for insurance claim prediction using Huber Loss to reduce the effect of outliers. It includes synthetic data generation, model training, evaluation, and an Arduino inference sketch for offline use.
+
+Key components:
+- `requirements.txt`: project dependencies
+- `README.md`: setup, training, and virtual demo instructions
+- `main.py`: root entry point for the virtual demo, model training, or dataset generation
+- `insurance.csv`: dataset used for training
+- `ml/generate_data.py`: synthetic insurance dataset generator
+- `ml/train_model.py`: trains the Huber regression model, evaluates it, and prints Arduino coefficients
+- `web-showcase/index.html`: minimal browser UI for age/BMI/children prediction
+- `ml/virtual_predict.py`: interactive virtual prediction demo without hardware
+- `ml/robust_vs_ols.png`: comparison plot for robust vs OLS regression
+- `arduino/insurance_predictor/insurance_predictor.ino`: optional Arduino firmware for claim prediction
+
+How to run:
+1. Create and activate a Python virtual environment.
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Run the virtual demo:
+   ```bash
+   python main.py virtual
+   ```
+4. Open the browser demo:
+   - open `web-showcase/index.html` in a browser
+5. Optionally retrain the model:
+   ```bash
+   python main.py train
+   ```
+6. Optionally regenerate the dataset:
+   ```bash
+   python main.py generate
+   ```
+
+Notes:
+- No hardware is required to run the prediction demo.
+- The virtual demo accepts Age, BMI, and Number of Children for claim prediction.
+- The Arduino sketch is optional and can be used later if desired.
+- The model is trained on Age, BMI, and Number of Children.
+- Huber loss improves robustness against large outliers during training.

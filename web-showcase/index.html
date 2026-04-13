@@ -2,15 +2,196 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <title>RobustClaim AI Showcase</title>
+    <title>Robust Claim Predictor</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, system-ui, sans-serif;
+        background: radial-gradient(circle at top, #222222 0%, #000000 45%, #050505 100%);
+        color: #f8fafc;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 3rem;
+      }
+      header {
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      }
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: clamp(2.25rem, 4vw, 3.25rem);
+        letter-spacing: -0.04em;
+      }
+      p {
+        margin: 0 0 1rem;
+        line-height: 1.8;
+        color: #cbd5e1;
+      }
+      .section {
+        margin-top: 1.75rem;
+      }
+      label {
+        display: block;
+        margin-top: 1.25rem;
+        font-weight: 600;
+        color: #f8fafc;
+      }
+      input {
+        width: 100%;
+        padding: 1rem 1.1rem;
+        margin-top: 0.5rem;
+        border: 1px solid #374151;
+        border-radius: 0.95rem;
+        background: #0a0a0d;
+        color: #f8fafc;
+        font-size: 1rem;
+      }
+      input:focus {
+        outline: none;
+        border-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+      }
+      input::placeholder {
+        color: #7c828a;
+      }
+      button {
+        width: 100%;
+        margin-top: 1.75rem;
+        padding: 1rem 1.1rem;
+        border: 1px solid #ffffff;
+        border-radius: 1rem;
+        background: #ffffff;
+        color: #000000;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+      button:hover {
+        background: #e5e7eb;
+        transform: translateY(-1px);
+      }
+      .card {
+        margin-top: 1.75rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 68px rgba(0, 0, 0, 0.28);
+        text-align: left;
+      }
+      .card strong {
+        display: block;
+        margin-bottom: 0.75rem;
+        font-size: 1.05rem;
+      }
+      .result {
+        margin-top: 1rem;
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #f8fafc;
+      }
+      .note {
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        color: #94a3b8;
+      }
+      .formula {
+        margin-top: 0.75rem;
+        padding: 1rem;
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #e2e8f0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <main>
+      <header>
+        <h1>Robust Claim Predictor</h1>
+        <p>Use Age, BMI, and number of Children to predict insurance claim amounts with a browser-based model.</p>
+      </header>
+      <div class="card">
+        <strong>About this project</strong>
+        <p>This system implements a robust regression model trained with Huber loss. It predicts insurance claim amounts while reducing the impact of extreme outliers in the training data.</p>
+        <p class="note">This page is fully virtual: no hardware, backend, or server is required. Predictions happen directly in the browser using pre-computed model weights.</p>
+      </div>
+      <div class="card">
+        <strong>How to use the inputs</strong>
+        <p><strong>Age</strong>: customer age in years. Older customers generally have higher claim amounts.</p>
+        <p><strong>BMI</strong>: body mass index. Higher BMI tends to increase insurance risk and claim cost.</p>
+        <p><strong>Children</strong>: number of dependents. More children can raise the expected claim amount.</p>
+      </div>
+      <div class="card">
+        <strong>How it works</strong>
+        <p>The browser uses a linear model with coefficients learned from training data. The formula is:</p>
+        <p class="note">Prediction = intercept + age × weight_age + BMI × weight_bmi + children × weight_children</p>
+        <p>The training algorithm was <strong>Huber regression</strong>, which behaves like mean-squared error for normal values and like mean-absolute error for outliers. That makes the model more stable when extreme claim values exist in the data.</p>
+      </div>
+
+      <form id="predict-form">
+        <label for="age">Age</label>
+        <input id="age" name="age" type="number" min="18" max="100" step="1" required value="30" />
+
+        <label for="bmi">BMI</label>
+        <input id="bmi" name="bmi" type="number" min="10" max="80" step="0.1" required value="25" />
+
+        <label for="children">Children</label>
+        <input id="children" name="children" type="number" min="0" max="10" step="1" required value="1" />
+
+        <button type="submit">Predict Claim</button>
+      </form>
+
+      <div class="card" id="output-card" hidden>
+        <strong>Prediction Result</strong>
+        <div id="prediction" class="result"></div>
+        <div class="note">This prediction uses a browser-side linear model trained with Huber regression.</div>
+      </div>
+    </main>
+
+    <script>
+      const COEFFICIENTS = {
+        intercept: 3080.7959,
+        age: 251.8535,
+        bmi: 310.8470,
+        children: 458.2227
+      };
+
+      const form = document.getElementById('predict-form');
+      const outputCard = document.getElementById('output-card');
+      const predictionEl = document.getElementById('prediction');
+
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+
+        const age = Number(document.getElementById('age').value);
+        const bmi = Number(document.getElementById('bmi').value);
+        const children = Number(document.getElementById('children').value);
+
+        const prediction = COEFFICIENTS.intercept +
+          COEFFICIENTS.age * age +
+          COEFFICIENTS.bmi * bmi +
+          COEFFICIENTS.children * children;
+
+        predictionEl.textContent = `$${prediction.toFixed(2)}`;
+        outputCard.hidden = false;
+      });
+    </script>
   </body>
 </html>

@@ -1,0 +1,12 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+  "python.pythonPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}\\ml"
+  ],
+  "python.analysis.useImportHeuristic": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    ".venv": false
+  }
+}
