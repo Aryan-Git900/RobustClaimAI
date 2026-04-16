@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import HuberRegressor, LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.metrics import mean_absolute_error, mean_squared_error, mean_absolute_percentage_error, r2_score
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
@@ -34,9 +34,13 @@ def evaluate(model, X_test, y_test, name: str):
     y_pred = model.predict(X_test)
     mae = mean_absolute_error(y_test, y_pred)
     mse = mean_squared_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)
+    mape = mean_absolute_percentage_error(y_test, y_pred)
     print(f"\n{name} Results:")
     print(f"  MAE: {mae:.2f}")
     print(f"  MSE: {mse:.2f}")
+    print(f"  R²: {r2:.4f}")
+    print(f"  MAPE: {mape:.4%}")
     print(f"  Coefficients: {model.coef_}")
     print(f"  Intercept: {model.intercept_:.2f}")
     return y_pred
@@ -50,11 +54,13 @@ def main():
         'sex': 'Sex',
         'bmi': 'BMI',
         'children': 'Children',
+        'smoker': 'Smoker',
         'charges': 'Claim'
     })
     df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
+    df['Smoker'] = df['Smoker'].map({'no': 0, 'yes': 1})
 
-    X = df[['Age', 'BMI', 'Children', 'Sex']]
+    X = df[['Age', 'BMI', 'Children', 'Sex', 'Smoker']]
     y = df['Claim']
 
     print(f"Data Shape: {df.shape}")
@@ -79,12 +85,14 @@ def main():
     mean_bmi = df['BMI'].mean()
     mean_children = df['Children'].mean()
     mean_sex = df['Sex'].mean()
+    mean_smoker = df['Smoker'].mean()
     age_range = np.linspace(df['Age'].min(), df['Age'].max(), 100)
     X_vis = pd.DataFrame({
         'Age': age_range,
         'BMI': mean_bmi,
         'Children': mean_children,
-        'Sex': mean_sex
+        'Sex': mean_sex,
+        'Smoker': mean_smoker
     })
 
     y_vis_huber = huber.predict(X_vis)
@@ -110,6 +118,7 @@ def main():
     print(f"float WEIGHT_BMI = {huber.coef_[1]:.4f};")
     print(f"float WEIGHT_CHILDREN = {huber.coef_[2]:.4f};")
     print(f"float WEIGHT_SEX = {huber.coef_[3]:.4f};")
+    print(f"float WEIGHT_SMOKER = {huber.coef_[4]:.4f};")
     print("=" * 30)
 
 

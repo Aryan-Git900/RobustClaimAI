@@ -28,10 +28,12 @@ def train_model(df: pd.DataFrame) -> HuberRegressor:
         'sex': 'Sex',
         'bmi': 'BMI',
         'children': 'Children',
+        'smoker': 'Smoker',
         'charges': 'Claim'
     })
     df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
-    X = df[['Age', 'BMI', 'Children', 'Sex']]
+    df['Smoker'] = df['Smoker'].map({'no': 0, 'yes': 1})
+    X = df[['Age', 'BMI', 'Children', 'Sex', 'Smoker']]
     y = df['Claim']
 
     model = HuberRegressor(epsilon=1.35, max_iter=2000)
@@ -60,6 +62,18 @@ def prompt_sex(prompt: str) -> int:
         print("Please enter 'male' or 'female'.")
 
 
+def prompt_smoker(prompt: str) -> int:
+    while True:
+        value = input(prompt).strip().lower()
+        if value in {'yes', 'y'}:
+            return 1
+        if value in {'no', 'n'}:
+            return 0
+        if value in {'exit', 'quit'}:
+            raise KeyboardInterrupt
+        print("Please enter 'yes' or 'no'.")
+
+
 def main():
     df = load_or_generate_data(DATA_PATH)
     model = train_model(df)
@@ -82,12 +96,13 @@ def main():
             bmi = prompt_float("BMI: ")
             children = prompt_float("Children: ")
             sex = prompt_sex("Sex (male/female): ")
+            smoker = prompt_smoker("Smoker (yes/no): ")
         except KeyboardInterrupt:
             break
 
         features = pd.DataFrame(
-            [[age, bmi, children, sex]],
-            columns=['Age', 'BMI', 'Children', 'Sex']
+            [[age, bmi, children, sex, smoker]],
+            columns=['Age', 'BMI', 'Children', 'Sex', 'Smoker']
         )
         prediction = model.predict(features)[0]
         print(f"\nPredicted claim amount: ${prediction:,.2f}\n")

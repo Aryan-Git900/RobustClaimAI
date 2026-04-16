@@ -137,13 +137,13 @@
         <p><strong>Age</strong>: customer age in years. Older customers generally have higher claim amounts.</p>
         <p><strong>BMI</strong>: body mass index. Higher BMI tends to increase insurance risk and claim cost.</p>
         <p><strong>Children</strong>: number of dependents. More children can raise the expected claim amount.</p>
-        <p><strong>Sex</strong>: categorical predictor encoded as male or female. The model uses sex as a binary feature for insurance risk.
-</p>
+        <p><strong>Sex</strong>: categorical predictor encoded as male or female. The model uses sex as a binary feature for insurance risk.</p>
+        <p><strong>Smoker</strong>: whether the customer smokes. Smoking is a major driver of higher insurance claims.</p>
       </div>
       <div class="card">
         <strong>How it works</strong>
         <p>The browser uses a linear model with coefficients learned from training data. The formula is:</p>
-        <p class="note">Prediction = intercept + age × weight_age + BMI × weight_bmi + children × weight_children + sex × weight_sex</p>
+        <p class="note">Prediction = intercept + age × weight_age + BMI × weight_bmi + children × weight_children + sex × weight_sex + smoker × weight_smoker</p>
         <p>The training algorithm was <strong>Huber regression</strong>, which behaves like mean-squared error for normal values and like mean-absolute error for outliers. That makes the model more stable when extreme claim values exist in the data.</p>
       </div>
 
@@ -163,6 +163,12 @@
           <option value="female">female</option>
         </select>
 
+        <label for="smoker">Smoker</label>
+        <select id="smoker" name="smoker" required>
+          <option value="no">no</option>
+          <option value="yes">yes</option>
+        </select>
+
         <button type="submit">Predict Claim</button>
       </form>
 
@@ -175,11 +181,12 @@
 
     <script>
       const COEFFICIENTS = {
-        intercept: 3125.7957,
-        age: 251.9895,
-        bmi: 311.7278,
-        children: 460.9245,
-        sex: -162.4374
+        intercept: 2786.5456,
+        age: 252.1754,
+        bmi: 308.5557,
+        children: 489.8091,
+        sex: -141.6520,
+        smoker: 23311.3139
       };
 
       const form = document.getElementById('predict-form');
@@ -193,12 +200,14 @@
         const bmi = Number(document.getElementById('bmi').value);
         const children = Number(document.getElementById('children').value);
         const sex = document.getElementById('sex').value === 'female' ? 1 : 0;
+        const smoker = document.getElementById('smoker').value === 'yes' ? 1 : 0;
 
         const prediction = COEFFICIENTS.intercept +
           COEFFICIENTS.age * age +
           COEFFICIENTS.bmi * bmi +
           COEFFICIENTS.children * children +
-          COEFFICIENTS.sex * sex;
+          COEFFICIENTS.sex * sex +
+          COEFFICIENTS.smoker * smoker;
 
         predictionEl.textContent = `$${prediction.toFixed(2)}`;
         outputCard.hidden = false;
