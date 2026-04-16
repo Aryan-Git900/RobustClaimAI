@@ -9,9 +9,9 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 
 try:
-    from ml.generate_data import generate_insurance_data
+    from ml.generate_data import generate_insurance_data, download_insurance_data
 except ImportError:
-    from generate_data import generate_insurance_data
+    from generate_data import generate_insurance_data, download_insurance_data
 
 ROOT = Path(__file__).resolve().parent
 DATA_PATH = ROOT.parent / "insurance.csv"
@@ -23,10 +23,8 @@ def load_or_generate_data(path: Path) -> pd.DataFrame:
         print(f"Loaded {path}")
         return pd.read_csv(path)
 
-    print(f"Warning: {path} not found. Generating dataset now.")
-    df = generate_insurance_data(1338)
-    df.to_csv(path, index=False)
-    print(f"Generated {path}")
+    print(f"Warning: {path} not found. Downloading real insurance data from the web.")
+    df = download_insurance_data(path)
     return df
 
 

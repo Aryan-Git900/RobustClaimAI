@@ -1,9 +1,12 @@
+import io
 import numpy as np
 import pandas as pd
 from pathlib import Path
+from urllib.request import urlopen
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / "insurance.csv"
+REAL_INSURANCE_URL = "https://raw.githubusercontent.com/stedy/Machine-Learning-with-R-datasets/master/insurance.csv"
 
 def generate_insurance_data(n=1000):
     np.random.seed(42)
@@ -36,6 +39,17 @@ def generate_insurance_data(n=1000):
     })
 
     return df
+
+
+def download_insurance_data(path: Path) -> pd.DataFrame:
+    print(f"Downloading real insurance data from {REAL_INSURANCE_URL}")
+    with urlopen(REAL_INSURANCE_URL) as response:
+        text = response.read().decode("utf-8")
+    df = pd.read_csv(io.StringIO(text))
+    df.to_csv(path, index=False)
+    print(f"Saved real data to {path}")
+    return df
+
 
 if __name__ == "__main__":
     df = generate_insurance_data(1338)

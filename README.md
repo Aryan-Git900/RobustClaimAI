@@ -35,7 +35,16 @@ python main.py virtual
 
 Enter values for `Age`, `BMI`, `Children`, `Sex`, and `Smoker` when prompted.
 
-### 3. Open the Browser Demo
+### 3. Download Real Insurance Data
+Fetch real insurance data from the web and save it to `insurance.csv`:
+
+```bash
+python main.py download
+```
+
+This downloads a public insurance dataset from GitHub and stores it locally.
+
+### 4. Open the Browser Demo
 Open the static page in a browser:
 
 - `web-showcase/index.html`
@@ -55,6 +64,8 @@ To recreate the synthetic dataset:
 ```bash
 python main.py generate
 ```
+
+> Use `download` for the real web dataset and `generate` only if you need synthetic data for testing.
 
 ### 6. Optional Arduino Deployment
 The Arduino sketch is optional and can be used later for a physical deployment.
