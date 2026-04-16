@@ -25,11 +25,13 @@ def load_or_generate_data(path: Path) -> pd.DataFrame:
 def train_model(df: pd.DataFrame) -> HuberRegressor:
     df = df.rename(columns={
         'age': 'Age',
+        'sex': 'Sex',
         'bmi': 'BMI',
         'children': 'Children',
         'charges': 'Claim'
     })
-    X = df[['Age', 'BMI', 'Children']]
+    df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
+    X = df[['Age', 'BMI', 'Children', 'Sex']]
     y = df['Claim']
 
     model = HuberRegressor(epsilon=1.35, max_iter=2000)
@@ -44,6 +46,18 @@ def prompt_float(prompt: str) -> float:
             return float(value)
         except ValueError:
             print("Please enter a valid number.")
+
+
+def prompt_sex(prompt: str) -> int:
+    while True:
+        value = input(prompt).strip().lower()
+        if value in {'male', 'm'}:
+            return 0
+        if value in {'female', 'f'}:
+            return 1
+        if value in {'exit', 'quit'}:
+            raise KeyboardInterrupt
+        print("Please enter 'male' or 'female'.")
 
 
 def main():
@@ -64,12 +78,16 @@ def main():
             print("Enter a valid number for age.")
             continue
 
-        bmi = prompt_float("BMI: ")
-        children = prompt_float("Children: ")
+        try:
+            bmi = prompt_float("BMI: ")
+            children = prompt_float("Children: ")
+            sex = prompt_sex("Sex (male/female): ")
+        except KeyboardInterrupt:
+            break
 
         features = pd.DataFrame(
-            [[age, bmi, children]],
-            columns=['Age', 'BMI', 'Children']
+            [[age, bmi, children, sex]],
+            columns=['Age', 'BMI', 'Children', 'Sex']
         )
         prediction = model.predict(features)[0]
         print(f"\nPredicted claim amount: ${prediction:,.2f}\n")

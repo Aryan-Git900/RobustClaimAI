@@ -47,12 +47,14 @@ def main():
 
     df = df.rename(columns={
         'age': 'Age',
+        'sex': 'Sex',
         'bmi': 'BMI',
         'children': 'Children',
         'charges': 'Claim'
     })
+    df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
 
-    X = df[['Age', 'BMI', 'Children']]
+    X = df[['Age', 'BMI', 'Children', 'Sex']]
     y = df['Claim']
 
     print(f"Data Shape: {df.shape}")
@@ -76,8 +78,14 @@ def main():
 
     mean_bmi = df['BMI'].mean()
     mean_children = df['Children'].mean()
+    mean_sex = df['Sex'].mean()
     age_range = np.linspace(df['Age'].min(), df['Age'].max(), 100)
-    X_vis = pd.DataFrame({'Age': age_range, 'BMI': mean_bmi, 'Children': mean_children})
+    X_vis = pd.DataFrame({
+        'Age': age_range,
+        'BMI': mean_bmi,
+        'Children': mean_children,
+        'Sex': mean_sex
+    })
 
     y_vis_huber = huber.predict(X_vis)
     y_vis_ols = ols.predict(X_vis)
@@ -101,6 +109,7 @@ def main():
     print(f"float WEIGHT_AGE = {huber.coef_[0]:.4f};")
     print(f"float WEIGHT_BMI = {huber.coef_[1]:.4f};")
     print(f"float WEIGHT_CHILDREN = {huber.coef_[2]:.4f};")
+    print(f"float WEIGHT_SEX = {huber.coef_[3]:.4f};")
     print("=" * 30)
 
 
